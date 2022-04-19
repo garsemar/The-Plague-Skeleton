@@ -6,7 +6,7 @@ import theplague.interfaces.Position
 import theplague.logic.item.vehicle.vehicles.OnFoot
 import theplague.logic.item.weapon.weapons.Hand
 
-class Player(val position: Position) : IPlayer, Iconizable {
+class Player(var position: Position) : IPlayer, Iconizable {
     override val icon : String = "👆";
     override val turns: Int = 10
     override val livesLeft: Int = 15

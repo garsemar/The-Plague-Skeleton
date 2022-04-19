@@ -25,7 +25,7 @@ class World(override val width: Int,
     }
 
     override fun moveTo(position: Position) {
-
+        player.position = position;
     }
 
     override fun exterminate() {
