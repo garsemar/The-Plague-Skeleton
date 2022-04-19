@@ -1,6 +1,8 @@
 package theplague.logic.item
 
-abstract class Item(timesLeft: Int) {
+import theplague.interfaces.Iconizable
+
+abstract class Item(timesLeft: Int) : Iconizable {
     fun use() {
     }
 }
