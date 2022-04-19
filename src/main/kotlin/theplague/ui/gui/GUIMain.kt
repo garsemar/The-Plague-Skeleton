@@ -17,4 +17,4 @@ fun main() = application {
     }
 }
 
-fun createWorld(): IWorld = World()
+fun createWorld(): IWorld = World(20,20)
