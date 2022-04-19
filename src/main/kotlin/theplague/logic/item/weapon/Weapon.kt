@@ -4,4 +4,6 @@ import theplague.interfaces.*
 import theplague.logic.item.Item
 
 open class Weapon(timesLeft: Int) : Item(timesLeft) {
+
+    sdf
 }
