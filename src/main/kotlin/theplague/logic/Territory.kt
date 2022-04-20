@@ -29,7 +29,6 @@ class Territory(val position: Position, val player: Player) : ITerritory {
     }
 
     fun addItem() {
-
     }
 
     fun generatePlague() {
