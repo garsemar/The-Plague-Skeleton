@@ -53,9 +53,8 @@ class World(
     override fun moveTo(position: Position) {
 
         player.position = position;
-        territories[position.y][position.x].hasPlayer();
+        territories[position.y][position.x].hasPlayer()
     }
-
     override fun exterminate() {
 
     }
