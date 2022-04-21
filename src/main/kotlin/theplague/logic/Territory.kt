@@ -5,13 +5,12 @@ import theplague.interfaces.Iconizable
 import theplague.interfaces.Position
 import theplague.logic.item.vehicle.vehicles.Bicycle
 import theplague.logic.item.vehicle.vehicles.Helicopter
-import theplague.logic.item.vehicle.vehicles.OnFoot
 import theplague.logic.item.weapon.Weapon
-import theplague.logic.item.vehicle.Vehicle
 import theplague.logic.item.weapon.weapons.*
 import theplague.logic.item.*
 
 class Colonization(colony: Colony, position: Position)
+
 sealed class Colony(size: Int) : Iconizable {
     fun willReproduce(): Boolean{
         return false
@@ -41,21 +40,43 @@ class Dragon(size: Int, val timeToReproduce: Int) : Colony(size) {
     override val icon : String = "\uD83D\uDC09"
 }
 
-class Territory(val position: Position, val player: Player) : ITerritory {
-    val plagueSize: Int = 3
+class Empty() : Iconizable {
+    override val icon: String = "";
+}
 
+enum class IcoSlots(val index: Int){
+    PLAYER(0),
+    ITEM(0),
+    COLONY(0),
+}
+
+class Territory(val position: Position) : ITerritory {
+
+    // Status
     private var hasPlayer : Boolean = false;
+    private var isColonized : Boolean = false; val plagueSize: Int = 3;
 
-    private val territoryItems : MutableList<Iconizable> = mutableListOf();
+    // Contains
+    private var plague : Colony? = null;
+    private var item : Item? = null;
+    private var player: Player? = null;
 
     override fun iconList() : List<Iconizable> {
-        val myIconList: MutableList<Iconizable> = territoryItems
-        if (hasPlayer) {
-            hasPlayer = false
-            myIconList.add(player)
+        val icoList : MutableList<Iconizable> = mutableListOf()
+
+        if(plague != null) {
+            repeat(plagueSize) {
+                icoList.add(plague!!)
+            }
+        }
+        if(item != null) {
+            icoList.add(item!!)
+        }
+        if(player != null) {
+            icoList.add(player!!)
         }
 
-        return myIconList
+        return icoList
     }
 
     private fun getRandomItem() : Item? {
@@ -69,7 +90,7 @@ class Territory(val position: Position, val player: Player) : ITerritory {
         return null
     }
 
-    fun getRandomPlague() : Iconizable? {
+    private fun getRandomPlague() : Colony? {
         var random = (0 until 100).random();
         return when (random) {
             in 0 .. 29 -> Ant(1, 30.0)
@@ -80,28 +101,27 @@ class Territory(val position: Position, val player: Player) : ITerritory {
         }
     }
 
-    fun hasPlayer() {
-        hasPlayer = true;
+    fun hasNotPlayer() {
+        this.player = null;
     }
 
-    fun onUpdate() {
-        territoryItems.clear()
-        val newItem = getRandomItem()
-        if(newItem != null) {
-            territoryItems.add(newItem)
-        }
-
-        val newPlague = getRandomPlague()
-        if(newPlague != null) {
-            territoryItems.add(newPlague)
-        }
-        if (newPlague != null) {
-            println(newPlague.icon)
-        }
-        if (newItem != null) {
-            println(newItem.icon)
-        }
+    fun hasPlayer(player: Player) {
+        this.player = player;
+        item = null
     }
+
+    fun spawnPlague() {
+        if(plague == null)
+            plague = getRandomPlague();
+    }
+
+    fun spawnItem() {
+        val newItem = getRandomItem();
+        if(newItem != null)
+            item = newItem
+    }
+
+
     fun exterminate() {
 
     }

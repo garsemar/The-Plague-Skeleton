@@ -14,22 +14,30 @@ class World(
     override val territories: List<List<Territory>> = List(height) { x ->
         List<Territory>(width) { y ->
             Territory(
-                Position(x, y),
-                player
+                Position(x, y)
             )
         }
     },
 ): IWorld {
 
     init {
-        territories[width/2][height/2].hasPlayer();
+        territories[width/2][height/2].hasPlayer(player);
+    }
+
+    fun getRandomWorldPosition() : Position {
+        return Position((0 until width).random(), (0 until height).random())
     }
 
     override fun nextTurn() {
 
-        val wRand = (0 until width).random();
-        val hRand = (0 until height).random()
-        territories[wRand][hRand].onUpdate()
+        // Spawn new colony
+        val colonyPos = getRandomWorldPosition();
+        territories[colonyPos.x][colonyPos.y].spawnPlague()
+
+        // Spawn new item
+        val itemPos = getRandomWorldPosition();
+        territories[colonyPos.x][colonyPos.y].spawnItem()
+
     }
 
     override fun gameFinished(): Boolean {
@@ -51,9 +59,12 @@ class World(
     }
 
     override fun moveTo(position: Position) {
+        val playerPos = player.position;
+        territories[playerPos.y][playerPos.x].hasNotPlayer()
 
         player.position = position;
-        territories[position.y][position.x].hasPlayer()
+        territories[position.y][position.x].hasPlayer(player)
+
     }
     override fun exterminate() {
 
