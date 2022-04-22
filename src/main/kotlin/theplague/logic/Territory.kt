@@ -58,7 +58,7 @@ class Territory(val position: Position) : ITerritory {
 
     // Contains
     private var plague : Colony? = null;
-    private var item : Item? = null;
+    var item : Item? = null;
     private var player: Player? = null;
 
     override fun iconList() : List<Iconizable> {
@@ -107,7 +107,6 @@ class Territory(val position: Position) : ITerritory {
 
     fun hasPlayer(player: Player) {
         this.player = player;
-        item = null
     }
 
     fun spawnPlague() {
@@ -115,6 +114,9 @@ class Territory(val position: Position) : ITerritory {
             plague = getRandomPlague();
     }
 
+    fun removeItem() {
+        item = null
+    }
     fun spawnItem() {
         val newItem = getRandomItem();
         if(newItem != null)

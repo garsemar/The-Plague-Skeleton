@@ -1,6 +1,7 @@
 package theplague.logic
 
 import theplague.interfaces.*
+import theplague.logic.item.vehicle.Vehicle
 import theplague.logic.item.vehicle.vehicles.Bicycle
 import theplague.logic.item.vehicle.vehicles.Helicopter
 import theplague.logic.item.vehicle.vehicles.OnFoot
@@ -19,6 +20,8 @@ class World(
         }
     },
 ): IWorld {
+
+    var takeableItem : Iconizable? = null;
 
     init {
         territories[width/2][height/2].hasPlayer(player);
@@ -63,7 +66,11 @@ class World(
         territories[playerPos.y][playerPos.x].hasNotPlayer()
 
         player.position = position;
-        territories[position.y][position.x].hasPlayer(player)
+        val targetTerritory = territories[position.y][position.x];
+        targetTerritory.hasPlayer(player)
+        takeableItem = targetTerritory.item
+        println(targetTerritory.iconList())
+        println(targetTerritory.item)
 
     }
     override fun exterminate() {
@@ -71,10 +78,10 @@ class World(
     }
 
     override fun takeableItem(): Iconizable? {
-        return null
+        return takeableItem
     }
 
     override fun takeItem() {
-
+        p
     }
 }
