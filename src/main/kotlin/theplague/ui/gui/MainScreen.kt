@@ -31,7 +31,6 @@ fun MainScreen(world: IWorld) {
 //    )
 //    val typography = Typography(defaultFontFamily = roboto)
 
-
     MaterialTheme() {
         if (pickItemDialog!=null) {
             PickItemDialog(pickItemDialog!!){
