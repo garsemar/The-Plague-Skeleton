@@ -1,12 +1,13 @@
 package theplague.logic
 
 import theplague.interfaces.*
+import theplague.logic.item.Item
 import theplague.logic.item.vehicle.Vehicle
 import theplague.logic.item.vehicle.vehicles.Bicycle
 import theplague.logic.item.vehicle.vehicles.Helicopter
 import theplague.logic.item.vehicle.vehicles.OnFoot
+import theplague.logic.item.weapon.Weapon
 import kotlin.math.*
-
 
 class World(
     override val width: Int,
@@ -22,12 +23,18 @@ class World(
 ): IWorld {
 
     var takeableItem : Iconizable? = null;
-
+    var turn = 0 ;
     init {
         territories[width/2][height/2].hasPlayer(player);
     }
+    var playerTerritory: Territory = territories[player.position.y][player.position.x];
 
-    fun getRandomWorldPosition() : Position {
+    @JvmName("getPlayerTerritory1")
+    fun getPlayerTerritory() : Territory {
+        return territories[player.position.y][player.position.x]
+    }
+
+    private fun getRandomWorldPosition() : Position {
         return Position((0 until width).random(), (0 until height).random())
     }
 
@@ -35,12 +42,21 @@ class World(
 
         // Spawn new colony
         val colonyPos = getRandomWorldPosition();
-        territories[colonyPos.x][colonyPos.y].spawnPlague()
+        territories[colonyPos.x][colonyPos.y].spawnPlague(turn)
 
         // Spawn new item
         val itemPos = getRandomWorldPosition();
         territories[colonyPos.x][colonyPos.y].spawnItem()
 
+        // Reproduce plague
+        for (i in 0 until width) {
+            for (j in 0 until height) {
+                if(player.position.x != i && player.position.y != j) {
+                    territories[i][j].reproducePlague(turn)
+                }
+            }
+        }
+        turn++;
     }
 
     override fun gameFinished(): Boolean {
@@ -66,12 +82,11 @@ class World(
         territories[playerPos.y][playerPos.x].hasNotPlayer()
 
         player.position = position;
-        val targetTerritory = territories[position.y][position.x];
+        val targetTerritory = getPlayerTerritory()
         targetTerritory.hasPlayer(player)
         takeableItem = targetTerritory.item
-        println(targetTerritory.iconList())
-        println(targetTerritory.item)
-
+        targetTerritory.removeItem()
+        targetTerritory.attackPlague()
     }
     override fun exterminate() {
 
@@ -82,6 +97,12 @@ class World(
     }
 
     override fun takeItem() {
-        p
+        if(takeableItem != null) {
+
+            when(takeableItem) {
+                is Vehicle -> player.currentVehicle = takeableItem as Vehicle
+                is Weapon -> player.currentWeapon = takeableItem as Weapon
+            }
+        }
     }
 }

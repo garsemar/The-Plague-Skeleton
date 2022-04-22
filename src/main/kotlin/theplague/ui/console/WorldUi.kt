@@ -50,8 +50,6 @@ class WorldUi(val scanner: Scanner = Scanner(System.`in`), val world: IWorld){
         world.nextTurn()
     }
 
-
-
     fun drawFirtLine(territory: ITerritory) {
         print(territory.iconList().getOrNull(0)?.icon ?: empty)
         print(territory.iconList().getOrNull(1)?.icon ?: empty)
