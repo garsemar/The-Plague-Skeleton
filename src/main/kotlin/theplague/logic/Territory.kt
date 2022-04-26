@@ -17,7 +17,7 @@ sealed class Colony() : Iconizable {
     open fun willReproduce(): Boolean{
         return false
     }
-    
+
     fun reproduce(){
         if(plagueSize >= maxPlagueSize)
             needsToExpand()
@@ -25,8 +25,8 @@ sealed class Colony() : Iconizable {
             plagueSize++;
 
     }
-    fun needsToExpand(){
-
+    open fun needsToExpand() : Boolean{
+        return false;
     }
     open fun attacked(weapon: Weapon){
     }
@@ -41,10 +41,10 @@ sealed class Colony() : Iconizable {
 class Ant() : Colony() {
     override val icon : String = "\uD83D\uDC1C"
 
-    var reproductionTax: Double = 30.0;
+    var reproductionTax: Int = 30;
 
     override fun willReproduce() : Boolean {
-        if((0 until 100).random() in 0 until reproductionTax.toInt()) {
+        if((0 until 100).random() in 0 until reproductionTax) {
             return true
         }
         return false;
@@ -61,8 +61,12 @@ class Ant() : Colony() {
         }
     }
 
+    override fun needsToExpand(): Boolean {
+        return false
+    }
+
     override fun expand(position: Position, maxPosition: Position): List<Colonization>{
-        if()
+        return listOf()
     }
 }
 
@@ -70,10 +74,11 @@ class Dragon() : Colony() {
     override val icon : String = "\uD83D\uDC09"
     private val timeToReproduce: Int = 5;
     var lastTurn = 0;
-    var turn: Int = 0;
+    var currentTurn: Int = 0;
     override fun willReproduce() : Boolean {
-        if(turn - lastTurn >= timeToReproduce) {
-            lastTurn = turn;
+        println("idk")
+        if(currentTurn - lastTurn >= timeToReproduce) {
+            lastTurn = currentTurn;
             return true
         }
         return false;
@@ -90,20 +95,18 @@ class Dragon() : Colony() {
     }
 }
 
-class Empty() : Iconizable {
-    override val icon: String = "";
-}
+
 
 class Territory(val position: Position) : ITerritory {
 
     // Status
-    private var hasPlayer : Boolean = false;
     private var isColonized : Boolean = false; val plagueSize: Int = 1;
 
     // Contains
     private var plague : Colony? = null;
     var item : Item? = null;
     private var player: Player? = null;
+    var turns : Int = 0;
 
     override fun iconList() : List<Iconizable> {
         val icoList : MutableList<Iconizable> = mutableListOf()
@@ -133,30 +136,31 @@ class Territory(val position: Position) : ITerritory {
         }
         return null
     }
-    
-    fun reproducePlague(turn: Int) {
+
+    fun reproducePlague() {
         when(plague) {
             is Ant ->
             {
                 val ants = (plague as Ant);
-                if(ants.willReproduce())
-                    ants.reproduce()
-
+                if(ants.needsToExpand())
+                    ants.expand()
+                else
+                    if(ants.willReproduce())
+                        ants.reproduce()
             }
             is Dragon -> {
                 val dragons = (plague as Dragon);
-                dragons.turn = turn
+                dragons.currentTurn = turns
                 if(dragons.willReproduce())
                     dragons.reproduce()
-
             }
             else -> {}
         }
     }
-    
+
     private fun getRandomPlague() : Colony? {
         return when ((0 until 100).random()) {
-            in 0 .. 29 -> Ant()
+            in 1 .. 30 -> Ant()
             in 30 .. 40 -> Dragon()
             else -> {
                 null
@@ -172,11 +176,15 @@ class Territory(val position: Position) : ITerritory {
         this.player = player;
     }
 
-    fun spawnPlague(turn: Int) {
-        if(plague == null)
-            plague = getRandomPlague();
-            if(plague is Dragon)
-                (plague as Dragon).lastTurn = turn;
+    fun spawnPlague(plague: Colony? = null) {
+        if(this.plague == null)
+            if(plague == null)
+                this.plague = getRandomPlague();
+            else
+                this.plague = plague
+
+        if(this.plague is Dragon)
+            (this.plague as Dragon).lastTurn = turns;
     }
 
     fun removeItem() {

@@ -23,9 +23,11 @@ class World(
 ): IWorld {
 
     var takeableItem : Iconizable? = null;
-    var turn = 0 ;
     init {
         territories[width/2][height/2].hasPlayer(player);
+        // Spawn new colony
+        val colonyPos = getRandomWorldPosition();
+        territories[colonyPos.x][colonyPos.y].spawnPlague(Ant())
     }
     var playerTerritory: Territory = territories[player.position.y][player.position.x];
 
@@ -39,24 +41,26 @@ class World(
     }
 
     override fun nextTurn() {
+        player.turns++;
 
         // Spawn new colony
         val colonyPos = getRandomWorldPosition();
-        territories[colonyPos.x][colonyPos.y].spawnPlague(turn)
+        territories[colonyPos.x][colonyPos.y].spawnPlague()
 
         // Spawn new item
         val itemPos = getRandomWorldPosition();
         territories[colonyPos.x][colonyPos.y].spawnItem()
 
         // Reproduce plague
+        territories.flatten().forEach { it.reproducePlague() }
         for (i in 0 until width) {
             for (j in 0 until height) {
                 if(player.position.x != i && player.position.y != j) {
-                    territories[i][j].reproducePlague(turn)
+                    territories[i][j].turns = player.turns;
+                    territories[i][j].reproducePlague()
                 }
             }
         }
-        turn++;
     }
 
     override fun gameFinished(): Boolean {
