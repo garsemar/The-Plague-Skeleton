@@ -14,4 +14,5 @@ class Player(var position: Position) : IPlayer, Iconizable {
     override val livesLeft: Int = 15
     override var currentWeapon: Weapon = Hand(1)
     override var currentVehicle: Vehicle = OnFoot(1)
+
 }

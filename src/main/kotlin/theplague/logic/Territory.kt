@@ -26,10 +26,9 @@ sealed class Colony() : Iconizable {
 
     }
     open fun needsToExpand() : Boolean{
-        return false;
+        return true
     }
-    open fun attacked(weapon: Weapon){
-    }
+    open fun attacked(weapon: Weapon) {}
     fun colonizedBy(plague: Colony): Colony {
         return plague
     }
@@ -73,14 +72,13 @@ class Ant() : Colony() {
 class Dragon() : Colony() {
     override val icon : String = "\uD83D\uDC09"
     private val timeToReproduce: Int = 5;
-    var lastTurn = 0;
-    var currentTurn: Int = 0;
+    var reproduceCounter = 0;
     override fun willReproduce() : Boolean {
-        println("idk")
-        if(currentTurn - lastTurn >= timeToReproduce) {
-            lastTurn = currentTurn;
+        if(reproduceCounter >= timeToReproduce) {
+            reproduceCounter = 0;
             return true
         }
+        reproduceCounter++;
         return false;
     }
     override fun attacked(weapon: Weapon){
@@ -143,14 +141,14 @@ class Territory(val position: Position) : ITerritory {
             {
                 val ants = (plague as Ant);
                 if(ants.needsToExpand())
-                    ants.expand()
+                    //ants.expand()
+                    println("xd")
                 else
                     if(ants.willReproduce())
                         ants.reproduce()
             }
             is Dragon -> {
                 val dragons = (plague as Dragon);
-                dragons.currentTurn = turns
                 if(dragons.willReproduce())
                     dragons.reproduce()
             }
@@ -168,7 +166,7 @@ class Territory(val position: Position) : ITerritory {
         }
     }
 
-    fun hasNotPlayer() {
+    fun removePlayer() {
         this.player = null;
     }
 
@@ -182,9 +180,6 @@ class Territory(val position: Position) : ITerritory {
                 this.plague = getRandomPlague();
             else
                 this.plague = plague
-
-        if(this.plague is Dragon)
-            (this.plague as Dragon).lastTurn = turns;
     }
 
     fun removeItem() {

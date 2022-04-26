@@ -22,18 +22,12 @@ class World(
     },
 ): IWorld {
 
-    var takeableItem : Iconizable? = null;
+    var territoryTakeableItem : Iconizable? = null;
     init {
         territories[width/2][height/2].hasPlayer(player);
         // Spawn new colony
         val colonyPos = getRandomWorldPosition();
         territories[colonyPos.x][colonyPos.y].spawnPlague(Ant())
-    }
-    var playerTerritory: Territory = territories[player.position.y][player.position.x];
-
-    @JvmName("getPlayerTerritory1")
-    fun getPlayerTerritory() : Territory {
-        return territories[player.position.y][player.position.x]
     }
 
     private fun getRandomWorldPosition() : Position {
@@ -52,26 +46,16 @@ class World(
         territories[colonyPos.x][colonyPos.y].spawnItem()
 
         // Reproduce plague
-        territories.flatten().forEach { it.reproducePlague() }
-        for (i in 0 until width) {
-            for (j in 0 until height) {
-                if(player.position.x != i && player.position.y != j) {
-                    territories[i][j].turns = player.turns;
-                    territories[i][j].reproducePlague()
-                }
-            }
-        }
+        territories.flatten().forEach { if(it.position.x != player.position.x && it.position.x != player.position.y) it.reproducePlague() }
     }
 
     override fun gameFinished(): Boolean {
         return false
     }
 
-    override fun canMoveTo(position: Position) : Boolean{
+    override fun canMoveTo(targetPos: Position) : Boolean{
 
-        val pos1 = player.position;
-        val pos2 = position;
-        val distance = sqrt((pos2.y - pos1.y).toDouble().pow(2) + (pos2.x - pos1.x).toDouble().pow(2))
+        val distance = sqrt((targetPos.y - player.position.y).toDouble().pow(2) + (targetPos.x - player.position.x).toDouble().pow(2))
 
         when (player.currentVehicle::class) {
             OnFoot::class -> return distance < 1.5
@@ -81,14 +65,21 @@ class World(
         return true
     }
 
-    override fun moveTo(position: Position) {
-        val playerPos = player.position;
-        territories[playerPos.y][playerPos.x].hasNotPlayer()
-
+    private fun movePlayerToTerritory(position: Position) {
         player.position = position;
-        val targetTerritory = getPlayerTerritory()
+    }
+
+    override fun moveTo(nextPosition: Position) {
+
+        // Remove player from territory
+        territories[player.position.y][player.position.x].removePlayer()
+
+        // Move player
+        this.movePlayerToTerritory(nextPosition)
+
+        val targetTerritory = territories[nextPosition.y][nextPosition.x]
         targetTerritory.hasPlayer(player)
-        takeableItem = targetTerritory.item
+        territoryTakeableItem = targetTerritory.item
         targetTerritory.removeItem()
         targetTerritory.attackPlague()
     }
@@ -97,15 +88,15 @@ class World(
     }
 
     override fun takeableItem(): Iconizable? {
-        return takeableItem
+        return territoryTakeableItem
     }
 
     override fun takeItem() {
-        if(takeableItem != null) {
+        if(territoryTakeableItem != null) {
 
-            when(takeableItem) {
-                is Vehicle -> player.currentVehicle = takeableItem as Vehicle
-                is Weapon -> player.currentWeapon = takeableItem as Weapon
+            when(territoryTakeableItem) {
+                is Vehicle -> player.currentVehicle = territoryTakeableItem as Vehicle
+                is Weapon -> player.currentWeapon = territoryTakeableItem as Weapon
             }
         }
     }
