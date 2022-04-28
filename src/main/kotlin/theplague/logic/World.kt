@@ -46,7 +46,14 @@ class World(
         territories[colonyPos.x][colonyPos.y].spawnItem()
 
         // Reproduce plague
-        territories.flatten().forEach { if(it.position.x != player.position.x && it.position.x != player.position.y) it.reproducePlague() }
+        territories.flatten().forEach { if(it.position.x != player.position.x && it.position.x != player.position.y) it.reproducePlague(Position(width, height)) }
+
+        territories.flatten().forEach {
+            if(Ant().needsToExpand()){
+                println("hola2")
+                Ant().expand(it.position, Position(width, height))
+            }
+        }
     }
 
     override fun gameFinished(): Boolean {
@@ -70,7 +77,6 @@ class World(
     }
 
     override fun moveTo(nextPosition: Position) {
-
         // Remove player from territory
         territories[player.position.y][player.position.x].removePlayer()
 

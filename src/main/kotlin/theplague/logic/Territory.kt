@@ -61,11 +61,24 @@ class Ant() : Colony() {
     }
 
     override fun needsToExpand(): Boolean {
+        if(plagueSize >= 3){
+            return true
+        }
         return false
     }
 
     override fun expand(position: Position, maxPosition: Position): List<Colonization>{
-        return listOf()
+        val posList = mutableListOf<Position>()
+
+        while (posList.size != 4){
+            val num = Position((0..2).random(), (0..2).random())
+            if(num !in posList){
+                posList.add(num)
+            }
+        }
+        val pos = Position((position.x-1)+posList[1].x, (position.y-1)+posList[1].y)
+        println(pos)
+        return listOf(Colonization(this, posList[1]))
     }
 }
 
@@ -135,14 +148,13 @@ class Territory(val position: Position) : ITerritory {
         return null
     }
 
-    fun reproducePlague() {
+    fun reproducePlague(maxPosition: Position) {
         when(plague) {
             is Ant ->
             {
                 val ants = (plague as Ant);
                 if(ants.needsToExpand())
-                    //ants.expand()
-                    println("xd")
+                    ants.expand(position, maxPosition)
                 else
                     if(ants.willReproduce())
                         ants.reproduce()
