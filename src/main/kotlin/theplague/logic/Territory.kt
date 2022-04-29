@@ -71,14 +71,14 @@ class Ant() : Colony() {
         val posList = mutableListOf<Position>()
 
         while (posList.size != 4){
-            val num = Position((0..2).random(), (0..2).random())
+            var num = Position((0..2).random(), (0..2).random())
+            num = Position((position.x-1)+num.x, (position.y-1)+num.y)
             if(num !in posList){
                 posList.add(num)
             }
         }
-        val pos = Position((position.x-1)+posList[1].x, (position.y-1)+posList[1].y)
-        println(pos)
-        return listOf(Colonization(this, posList[1]))
+        println(listOf(posList[0]))
+        return listOf(Colonization(this, posList[0]))
     }
 }
 
@@ -133,7 +133,6 @@ class Territory(val position: Position) : ITerritory {
         if(player != null) {
             icoList.add(player!!)
         }
-
         return icoList
     }
 
