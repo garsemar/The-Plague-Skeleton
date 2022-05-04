@@ -77,7 +77,6 @@ class Ant() : Colony() {
                 posList.add(num)
             }
         }
-        println(listOf(posList[0]))
         return listOf(Colonization(this, posList[0]))
     }
 }

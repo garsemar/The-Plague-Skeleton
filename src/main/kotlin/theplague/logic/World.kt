@@ -50,7 +50,6 @@ class World(
 
         territories.flatten().forEach {
             if(Ant().needsToExpand()){
-                println("hola2")
                 Ant().expand(it.position, Position(width, height))
             }
         }
