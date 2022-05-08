@@ -1,38 +1,10 @@
 package theplague.logic.enemies
 
-import theplague.interfaces.Iconizable
 import theplague.interfaces.Position
 import theplague.logic.item.weapon.Weapon
 import theplague.logic.item.weapon.weapons.Broom
 import theplague.logic.item.weapon.weapons.Hand
 import theplague.logic.item.weapon.weapons.Sword
-
-class Colonization(colony: Colony, position: Position)
-sealed class Colony() : Iconizable {
-    var plagueSize: Int = 1;
-    var maxPlagueSize: Int = 3;
-    open fun willReproduce(): Boolean{
-        return false
-    }
-
-    fun reproduce(){
-        if(plagueSize >= maxPlagueSize)
-            needsToExpand()
-        else
-            plagueSize++;
-
-    }
-    open fun needsToExpand() : Boolean{
-        return true
-    }
-    open fun attacked(weapon: Weapon) {}
-    fun colonizedBy(plague: Colony): Colony {
-        return plague
-    }
-    open fun expand(position: Position, maxPosition: Position): List<Colonization>{
-        return listOf()
-    }
-}
 
 class Ant() : Colony() {
     override val icon : String = "\uD83D\uDC1C"
@@ -77,26 +49,3 @@ class Ant() : Colony() {
     }
 }
 
-class Dragon() : Colony() {
-    override val icon : String = "\uD83D\uDC09"
-    private val timeToReproduce: Int = 5;
-    var reproduceCounter = 0;
-    override fun willReproduce() : Boolean {
-        if(reproduceCounter >= timeToReproduce) {
-            reproduceCounter = 0;
-            return true
-        }
-        reproduceCounter++;
-        return false;
-    }
-    override fun attacked(weapon: Weapon){
-        when(weapon){
-            is Hand -> plagueSize -= 0
-            is Broom -> plagueSize -= 0
-            is Sword -> plagueSize -= 1
-        }
-        if (plagueSize < 0) {
-            plagueSize = 0
-        }
-    }
-}

@@ -18,6 +18,5 @@ fun EndGameScreen(player: IPlayer){
         verticalArrangement = Arrangement.Center){
         Text(text = "Game Ended", fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(10.dp))
         Text("Game ended. You have lived ${player.turns} turns")
-
     }
 }

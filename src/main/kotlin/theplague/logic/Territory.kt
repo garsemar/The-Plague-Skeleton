@@ -11,17 +11,13 @@ import theplague.logic.item.vehicle.vehicles.Helicopter
 import theplague.logic.item.weapon.weapons.*
 import theplague.logic.item.*
 
-
 class Territory(val position: Position) : ITerritory {
 
-    // Status
-    private var isColonized : Boolean = false; val plagueSize: Int = 1;
 
     // Contains
     private var plague : Colony? = null;
     var item : Item? = null;
     private var player: Player? = null;
-    var turns : Int = 0;
 
     override fun iconList() : List<Iconizable> {
         val icoList : MutableList<Iconizable> = mutableListOf()
