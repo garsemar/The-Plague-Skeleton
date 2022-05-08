@@ -66,7 +66,6 @@ class Ant() : Colony() {
         }
         return false
     }
-
     override fun expand(position: Position, maxPosition: Position): List<Colonization>{
         val posList = mutableListOf<Position>()
 
