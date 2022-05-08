@@ -27,7 +27,7 @@ sealed class Colony() : Iconizable {
         return plague
     }
 
-    open fun expand(position: Position, maxPosition: Position): List<Colonization>{
+    open fun expand(position: Position, maxPosition: Int): List<Colonization>{
         return listOf()
     }
 }

@@ -5,6 +5,7 @@ import theplague.logic.enemies.Ant
 import theplague.logic.Player
 import theplague.logic.Territory
 import theplague.logic.enemies.Colonization
+import theplague.logic.enemies.Colony
 import theplague.logic.item.Item
 import theplague.logic.item.vehicle.Vehicle
 import theplague.logic.item.vehicle.vehicles.OnFoot
@@ -47,8 +48,8 @@ class World(
         else
             player.currentVehicle.timesLeft--;
 
-        generateNewItems()
         generateNewColonies()
+        generateNewItems()
         reproducePlague()
         expandPlague()
     }
@@ -59,14 +60,18 @@ class World(
     }
 
     private fun reproducePlague() {
-
         territories.flatten().forEach { if(it.position.x != player.position.x && it.position.x != player.position.y) it.reproducePlague(Position(width, height)) }
-
     }
 
     private fun expandPlague() {
+
         territories.flatten().forEach {
-            it.expandPlague()
+            val colony = it.plague;
+            colony?.expand(it.position, 1)
+        }
+
+        territories.flatten().forEach {
+            it.plague?.let { it1 -> Colonization(it1, it.position) }
         }
     }
 
@@ -109,7 +114,6 @@ class World(
 
     override fun takeItem() {
         if(takeableItem != null) {
-
             when(takeableItem) {
                 is Vehicle -> player.currentVehicle = takeableItem as Vehicle
                 is Weapon -> player.currentWeapon = takeableItem as Weapon
