@@ -36,8 +36,8 @@ class Ant() : Colony() {
         return false
     }
     override fun expand(position: Position, maxPosition: Position): List<Colonization>{
-        val posList = mutableListOf<Position>()
 
+        val posList = mutableListOf<Position>()
         while (posList.size != 4){
             var num = Position((0..2).random(), (0..2).random())
             num = Position((position.x - 1) + num.x, (position.y - 1) + num.y)
@@ -47,5 +47,7 @@ class Ant() : Colony() {
         }
         return listOf(Colonization(this, posList[0]))
     }
+
+
 }
 

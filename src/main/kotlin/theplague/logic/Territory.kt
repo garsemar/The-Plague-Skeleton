@@ -13,9 +13,8 @@ import theplague.logic.item.*
 
 class Territory(val position: Position) : ITerritory {
 
-
     // Contains
-    private var plague : Colony? = null;
+    var plague : Colony? = null;
     var item : Item? = null;
     private var player: Player? = null;
 
@@ -40,23 +39,53 @@ class Territory(val position: Position) : ITerritory {
         when ((0 until 100).random()) {
             in 0 .. 24 -> return Bicycle(5)
             in 25 .. 34 -> return Helicopter(5)
-            in 35 .. 59 -> return Broom(1)
-            in 60 .. 69 -> return Sword(0)
+            in 35 .. 59 -> return Broom(-1)
+            in 60 .. 69 -> return Sword(-1)
             in 70 .. 99 -> return null
         }
         return null
     }
 
-    fun reproducePlague(maxPosition: Position) {
+    fun expandPlague() {
         when(plague) {
             is Ant ->
             {
                 val ants = (plague as Ant);
-                if(ants.needsToExpand())
-                    ants.expand(position, maxPosition)
-                else
-                    if(ants.willReproduce())
-                        ants.reproduce()
+                if(ants.willReproduce())
+                {
+                    if(ants.needsToExpand())
+                        ants.expand(position, Position(1,1))
+                    else ants.reproduce()
+                }
+
+            }
+            is Dragon -> {
+                val dragons = (plague as Dragon);
+                if(dragons.willReproduce()) {
+                    if(dragons.needsToExpand())
+                        dragons.expand(position, Position(1,1))
+                    else dragons.reproduce()
+                }
+            }
+            else -> {}
+        }
+    }
+
+    fun reproducePlague(maxPosition: Position) {
+
+        /*if(plague?.willReproduce() == true)
+        {
+            if(plague?.needsToExpand()!!)
+                plague?.expand(position, maxPosition)
+            else plague?.reproduce()
+        }*/
+
+        when(plague) {
+            is Ant ->
+            {
+                val ants = (plague as Ant);
+                if(ants.willReproduce())
+                    ants.reproduce()
             }
             is Dragon -> {
                 val dragons = (plague as Dragon);
@@ -81,11 +110,11 @@ class Territory(val position: Position) : ITerritory {
         this.player = null;
     }
 
-    fun hasPlayer(player: Player) {
+    fun setPlayer(player: Player) {
         this.player = player;
     }
 
-    fun spawnPlague(plague: Colony? = null) {
+    fun summonPlague(plague: Colony? = null) {
         if(this.plague == null)
             if(plague == null)
                 this.plague = getRandomPlague();
@@ -96,11 +125,15 @@ class Territory(val position: Position) : ITerritory {
     fun removeItem() {
         item = null
     }
-    fun spawnItem() {
-        val newItem = getRandomItem();
-        if(newItem != null)
-            item = newItem
+    fun spawnItem(itemType : Item? = null) {
+
+        if(itemType == null) {
+            val newItem = getRandomItem();
+            if(newItem != null)
+                item = newItem
+        }
     }
+
 
     fun attackPlague(){
         //plague?.attacked()
@@ -108,9 +141,5 @@ class Territory(val position: Position) : ITerritory {
         if(plague?.plagueSize == 0){
             plague = null
         }
-    }
-
-    fun exterminate() {
-
     }
 }

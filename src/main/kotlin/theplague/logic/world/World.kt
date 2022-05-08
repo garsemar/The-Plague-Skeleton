@@ -4,9 +4,9 @@ import theplague.interfaces.*
 import theplague.logic.enemies.Ant
 import theplague.logic.Player
 import theplague.logic.Territory
+import theplague.logic.enemies.Colonization
+import theplague.logic.item.Item
 import theplague.logic.item.vehicle.Vehicle
-import theplague.logic.item.vehicle.vehicles.Bicycle
-import theplague.logic.item.vehicle.vehicles.Helicopter
 import theplague.logic.item.vehicle.vehicles.OnFoot
 import theplague.logic.item.weapon.Weapon
 import kotlin.math.*
@@ -16,7 +16,7 @@ class World(
     override val height: Int,
     override val player: Player = Player(Position(width / 2, height / 2)),
     override val territories: List<List<Territory>> = List(height) { x ->
-        List<Territory>(width) { y ->
+        List(width) { y ->
             Territory(
                 Position(x, y)
             )
@@ -24,12 +24,16 @@ class World(
     },
 ): IWorld {
 
-    var territoryTakeableItem : Iconizable? = null;
+    var takeableItem : Item? = null;
+    var colonization : Colonization? = null;
+    var actualPlayerTerritory = territories[width/2][height/2];
+
     init {
-        territories[width/2][height/2].hasPlayer(player);
+        territories[width/2][height/2].setPlayer(player);
         // Spawn new colony
         val colonyPos = getRandomWorldPosition();
-        territories[colonyPos.x][colonyPos.y].spawnPlague(Ant())
+        territories[colonyPos.x][colonyPos.y].summonPlague(Ant())
+        this.player.turns++;
     }
 
     private fun getRandomWorldPosition() : Position {
@@ -37,24 +41,38 @@ class World(
     }
 
     override fun nextTurn() {
-        player.turns++;
 
-        // Spawn new colony
+        if(player.currentVehicle.timesLeft == 0)
+            player.currentVehicle = OnFoot(-1);
+        else
+            player.currentVehicle.timesLeft--;
+
+        generateNewItems()
+        generateNewColonies()
+        reproducePlague()
+        expandPlague()
+    }
+
+    private fun generateNewColonies() {
         val colonyPos = getRandomWorldPosition();
-        territories[colonyPos.x][colonyPos.y].spawnPlague()
+        territories[colonyPos.x][colonyPos.y].summonPlague()
+    }
 
-        // Spawn new item
-        val itemPos = getRandomWorldPosition();
-        territories[colonyPos.x][colonyPos.y].spawnItem()
+    private fun reproducePlague() {
 
-        // Reproduce plague
         territories.flatten().forEach { if(it.position.x != player.position.x && it.position.x != player.position.y) it.reproducePlague(Position(width, height)) }
 
+    }
+
+    private fun expandPlague() {
         territories.flatten().forEach {
-            if(Ant().needsToExpand()){
-                Ant().expand(it.position, Position(width, height))
-            }
+            it.expandPlague()
         }
+    }
+
+    private fun generateNewItems() {
+        val itemPos = getRandomWorldPosition();
+        territories[itemPos.x][itemPos.y].spawnItem()
     }
 
     override fun gameFinished(): Boolean {
@@ -62,48 +80,39 @@ class World(
     }
 
     override fun canMoveTo(targetPos: Position) : Boolean{
-
-        val distance = sqrt((targetPos.y - player.position.y).toDouble().pow(2) + (targetPos.x - player.position.x).toDouble().pow(2))
-
-        when (player.currentVehicle::class) {
-            OnFoot::class -> return distance < 1.5
-            Bicycle::class -> return distance < 4.5
-            Helicopter::class -> return true
-        }
-        return true
-    }
-
-    private fun movePlayerToTerritory(position: Position) {
-        player.position = position;
+        return player.currentVehicle.canMove(player.position, targetPos)
     }
 
     override fun moveTo(nextPosition: Position) {
         // Remove player from territory
-        territories[player.position.y][player.position.x].removePlayer()
+        actualPlayerTerritory.removePlayer()
 
         // Move player
-        this.movePlayerToTerritory(nextPosition)
+        player.position = nextPosition;
+        actualPlayerTerritory = territories[nextPosition.y][nextPosition.x]
 
-        val targetTerritory = territories[nextPosition.y][nextPosition.x]
-        targetTerritory.hasPlayer(player)
-        territoryTakeableItem = targetTerritory.item
-        targetTerritory.removeItem()
-        targetTerritory.attackPlague()
+        actualPlayerTerritory.setPlayer(player)
+        takeableItem = actualPlayerTerritory.item
+        actualPlayerTerritory.removeItem()
+
+        exterminate();
+        this.player.turns++;
     }
     override fun exterminate() {
-
+        actualPlayerTerritory.attackPlague()
     }
 
     override fun takeableItem(): Iconizable? {
-        return territoryTakeableItem
+
+        return takeableItem
     }
 
     override fun takeItem() {
-        if(territoryTakeableItem != null) {
+        if(takeableItem != null) {
 
-            when(territoryTakeableItem) {
-                is Vehicle -> player.currentVehicle = territoryTakeableItem as Vehicle
-                is Weapon -> player.currentWeapon = territoryTakeableItem as Weapon
+            when(takeableItem) {
+                is Vehicle -> player.currentVehicle = takeableItem as Vehicle
+                is Weapon -> player.currentWeapon = takeableItem as Weapon
             }
         }
     }

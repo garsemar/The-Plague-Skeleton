@@ -17,6 +17,7 @@ class Dragon() : Colony() {
         reproduceCounter++;
         return false;
     }
+
     override fun attacked(weapon: Weapon){
         when(weapon){
             is Hand -> plagueSize -= 0
@@ -26,5 +27,12 @@ class Dragon() : Colony() {
         if (plagueSize < 0) {
             plagueSize = 0
         }
+    }
+
+    override fun needsToExpand(): Boolean {
+        if(plagueSize >= 3){
+            return true
+        }
+        return false
     }
 }

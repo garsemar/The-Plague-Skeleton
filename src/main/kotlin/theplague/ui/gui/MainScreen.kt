@@ -49,8 +49,12 @@ fun MainScreen(world: IWorld) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    UserDataDisplay(currentWorld.player)
+                    println("${currentWorld.player.currentVehicle.icon} -" +
+                            "${currentWorld.player.currentWeapon.icon} - " +
+                            "${currentWorld.player.livesLeft} -" +
+                            " ${currentWorld.player.turns}")
 
+                    UserDataDisplay(currentWorld.player)
 
                     currentWorld.territories.forEachIndexed { y, row ->
                         Row() {

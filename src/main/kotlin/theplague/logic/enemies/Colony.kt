@@ -22,9 +22,11 @@ sealed class Colony() : Iconizable {
         return true
     }
     open fun attacked(weapon: Weapon) {}
+
     fun colonizedBy(plague: Colony): Colony {
         return plague
     }
+
     open fun expand(position: Position, maxPosition: Position): List<Colonization>{
         return listOf()
     }
