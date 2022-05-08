@@ -79,9 +79,13 @@ class World(
      * This function calls the expand function passing as parameter the class Position and the maxPosition.
      */
     private fun expandPlague() {
+
         territories.flatten().forEach {
-            val colony = it.plague;
-            colony?.expand(it.position, 1)
+            if(it.plague?.needsToExpand() == true)
+            {
+                player.livesLeft--;
+                //it.plague.expand(it.position, P)
+            }
         }
     }
 
@@ -97,6 +101,9 @@ class World(
      * This function returns true if the game ends.
      */
     override fun gameFinished(): Boolean {
+        if(player.livesLeft <= 0) {
+            return true
+        }
         return false
     }
 

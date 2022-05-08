@@ -11,7 +11,7 @@ import theplague.logic.item.weapon.weapons.Hand
 class Player(var position: Position) : IPlayer, Iconizable {
     override val icon : String = "\uD83D\uDEB6";
     override var turns: Int = 0
-    override val livesLeft: Int = 15
+    override var livesLeft: Int = 15
     override var currentWeapon: Weapon = Hand(-1)
     override var currentVehicle: Vehicle = OnFoot(-1)
 }
