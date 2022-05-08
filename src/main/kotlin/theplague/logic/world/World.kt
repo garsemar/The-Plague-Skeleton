@@ -64,14 +64,9 @@ class World(
     }
 
     private fun expandPlague() {
-
         territories.flatten().forEach {
             val colony = it.plague;
             colony?.expand(it.position, 1)
-        }
-
-        territories.flatten().forEach {
-            it.plague?.let { it1 -> Colonization(it1, it.position) }
         }
     }
 
@@ -101,14 +96,14 @@ class World(
         actualPlayerTerritory.removeItem()
 
         exterminate();
-        this.player.turns++;
+        player.turns++;
     }
+
     override fun exterminate() {
         actualPlayerTerritory.attackPlague()
     }
 
     override fun takeableItem(): Iconizable? {
-
         return takeableItem
     }
 

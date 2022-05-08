@@ -6,5 +6,4 @@ import theplague.logic.item.weapon.Weapon
 
 class Colonization(colony: Colony, position: Position) {
 
-
 }

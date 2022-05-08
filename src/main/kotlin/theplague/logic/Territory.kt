@@ -13,64 +13,33 @@ import theplague.logic.item.*
 
 class Territory(val position: Position) : ITerritory {
 
-    // Contains
     var plague : Colony? = null;
     var item : Item? = null;
     private var player: Player? = null;
 
-    override fun iconList() : List<Iconizable> {
-        val icoList : MutableList<Iconizable> = mutableListOf()
-
-        if(plague != null) {
-            repeat(plague!!.plagueSize) {
-                icoList.add(plague!!)
-            }
-        }
-        if(item != null) {
-            icoList.add(item!!)
-        }
-        if(player != null) {
-            icoList.add(player!!)
-        }
-        return icoList
+    fun setPlayer(player: Player) {
+        this.player = player;
+    }
+    fun removePlayer() {
+        this.player = null;
     }
 
-    private fun getRandomItem() : Item? {
-        when ((0 until 100).random()) {
-            in 0 .. 24 -> return Bicycle(5)
-            in 25 .. 34 -> return Helicopter(5)
-            in 35 .. 59 -> return Broom(-1)
-            in 60 .. 69 -> return Sword(-1)
-            in 70 .. 99 -> return null
-        }
-        return null
+    fun summonPlague(plague: Colony? = null) {
+        if(this.plague == null)
+            if(plague == null)
+                this.plague = getRandomPlague();
+            else
+                this.plague = plague
     }
-
-    fun expandPlague() {
-        when(plague) {
-            is Ant ->
-            {
-                val ants = (plague as Ant);
-                if(ants.willReproduce())
-                {
-                    if(ants.needsToExpand())
-                        ants.expand(position, Position(1,1))
-                    else ants.reproduce()
-                }
-
+    private fun getRandomPlague() : Colony? {
+        return when ((0 until 100).random()) {
+            in 1 .. 30 -> Ant()
+            in 30 .. 40 -> Dragon()
+            else -> {
+                null
             }
-            is Dragon -> {
-                val dragons = (plague as Dragon);
-                if(dragons.willReproduce()) {
-                    if(dragons.needsToExpand())
-                        dragons.expand(position, Position(1,1))
-                    else dragons.reproduce()
-                }
-            }
-            else -> {}
         }
     }
-
     fun reproducePlague(maxPosition: Position) {
 
         /*if(plague?.willReproduce() == true)
@@ -96,44 +65,27 @@ class Territory(val position: Position) : ITerritory {
         }
     }
 
-    private fun getRandomPlague() : Colony? {
-        return when ((0 until 100).random()) {
-            in 1 .. 30 -> Ant()
-            in 30 .. 40 -> Dragon()
-            else -> {
-                null
-            }
+    private fun getRandomItem() : Item? {
+        when ((0 until 100).random()) {
+            in 0 .. 24 -> return Bicycle(5)
+            in 25 .. 34 -> return Helicopter(5)
+            in 35 .. 59 -> return Broom(-1)
+            in 60 .. 69 -> return Sword(-1)
+            in 70 .. 99 -> return null
         }
+        return null
     }
+    fun spawnItem() {
 
-    fun removePlayer() {
-        this.player = null;
+
+        val newItem = getRandomItem();
+        if(newItem != null)
+            item = newItem
+
     }
-
-    fun setPlayer(player: Player) {
-        this.player = player;
-    }
-
-    fun summonPlague(plague: Colony? = null) {
-        if(this.plague == null)
-            if(plague == null)
-                this.plague = getRandomPlague();
-            else
-                this.plague = plague
-    }
-
     fun removeItem() {
         item = null
     }
-    fun spawnItem(itemType : Item? = null) {
-
-        if(itemType == null) {
-            val newItem = getRandomItem();
-            if(newItem != null)
-                item = newItem
-        }
-    }
-
 
     fun attackPlague(){
         //plague?.attacked()
@@ -141,5 +93,22 @@ class Territory(val position: Position) : ITerritory {
         if(plague?.plagueSize == 0){
             plague = null
         }
+    }
+
+    override fun iconList() : List<Iconizable> {
+        val icoList : MutableList<Iconizable> = mutableListOf()
+
+        if(plague != null) {
+            repeat(plague!!.plagueSize) {
+                icoList.add(plague!!)
+            }
+        }
+        if(item != null) {
+            icoList.add(item!!)
+        }
+        if(player != null) {
+            icoList.add(player!!)
+        }
+        return icoList
     }
 }
