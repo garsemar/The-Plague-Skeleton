@@ -1,7 +1,7 @@
 package theplague.ui.console
 
-import theplague.logic.world.World
 import java.util.*
+import theplague.logic.world.World
 
 fun main() {
     val world = World(10,10)

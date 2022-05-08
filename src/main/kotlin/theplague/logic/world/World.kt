@@ -1,7 +1,9 @@
-package theplague.logic
+package theplague.logic.world
 
 import theplague.interfaces.*
-import theplague.logic.item.Item
+import theplague.logic.enemies.Ant
+import theplague.logic.Player
+import theplague.logic.Territory
 import theplague.logic.item.vehicle.Vehicle
 import theplague.logic.item.vehicle.vehicles.Bicycle
 import theplague.logic.item.vehicle.vehicles.Helicopter
