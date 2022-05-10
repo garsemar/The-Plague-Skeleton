@@ -17,33 +17,41 @@ It is a turn-based game in which the following phases or actions follow one anot
 
 7. Phase of expansion of the colonies
 ---
+
+### **World**
+  - Vehicle and article generation ✅
+
 ### **Movement**
-- **Waling (🚶):** Contiguous square
-- **Bicycle (🚲):**  Maximum distance of 4 squares
-- **Helicopter (🚁):** Wherever
+- **Waling (🚶):** Contiguous square ✅
+- **Bicycle (🚲):**  Maximum distance of 4 squares ✅
+- **Helicopter (🚁):** Wherever ✅
 ---
 ### **Weapons**
-- **Hand (👆):** Contiguous square
-- **Sword (🗡):**  Maximum distance of 4 squares
-- **Broom (🧹):** Wherever
+- **Hand (👆):** Contiguous square ✅
+- **Sword (🗡):**  Maximum distance of 4 squares ✅
+- **Broom (🧹):** Wherever ✅
 ---
 ### **Enemies**
  - **Dragon (🐉)**
    - **Combat**
-     - 🧹 Has no effect
-     - 🗡 Decreases the size of the colony by 1
+     - 🧹 Has no effect ✅
+     - 🗡 Decreases the size of the colony by 1 ✅
      - 👆 No effect  
-   - **Reproduction**
-   - **Expansion**
-     
+   - **Reproduction** ✅
+   - **Expansion** ✅
+
    
  - **Ants (🐜)**
    - **Combat**
-      - 🧹 Eliminates the colony
-      - 🗡 Decreases the size of the colony by 1
-      - 👆 Decreases the size of the colony by 2
-   - **Reproduction**
-   - **Expansion**
+      - 🧹 Eliminates the colony ✅
+      - 🗡 Decreases the size of the colony by 1 ✅
+      - 👆 Decreases the size of the colony by 2 ✅
+   - **Reproduction** ✅
+   - **Expansion** ✅
+
+### Player
+  - Minus 1 healt on every plague expansion ✅
+  - Finish game and display stats ✅
 
 ---
 
@@ -52,3 +60,4 @@ It is a turn-based game in which the following phases or actions follow one anot
 <img src="./resources/01.png" width="400" height="100%">
 <img src="./resources/02.png" width="400" height="100%">
 <img src="./resources/03.png" width="400" height="100%">
+
