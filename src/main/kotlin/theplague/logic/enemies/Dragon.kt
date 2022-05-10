@@ -1,5 +1,6 @@
 package theplague.logic.enemies
 
+import theplague.interfaces.Position
 import theplague.logic.item.weapon.Weapon
 import theplague.logic.item.weapon.weapons.Broom
 import theplague.logic.item.weapon.weapons.Hand
@@ -34,5 +35,19 @@ class Dragon() : Colony() {
             return true
         }
         return false
+    }
+
+    override fun colonizedBy(plague: Colony): Colony {
+        when(plague) {
+            is Ant -> return this
+            is Dragon -> {this.plagueSize = plagueSize+plague.plagueSize}
+        }
+        return this
+    }
+
+    override fun expand(position: Position, maxPosition: Position): List<Colonization>{
+
+        val newPos = Position(((0..(maxPosition.x)).random()), ((0..(maxPosition.y)).random()))
+        return listOf(Colonization(this, newPos))
     }
 }

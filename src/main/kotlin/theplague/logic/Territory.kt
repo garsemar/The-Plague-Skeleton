@@ -42,13 +42,6 @@ class Territory(val position: Position) : ITerritory {
     }
     fun reproducePlague(maxPosition: Position) {
 
-        /*if(plague?.willReproduce() == true)
-        {
-            if(plague?.needsToExpand()!!)
-                plague?.expand(position, maxPosition)
-            else plague?.reproduce()
-        }*/
-
         when(plague) {
             is Ant ->
             {
@@ -93,6 +86,10 @@ class Territory(val position: Position) : ITerritory {
         if(plague?.plagueSize == 0){
             plague = null
         }
+    }
+
+    fun expand(pos: Position, maxPosition: Position) : List<Territory> {
+        return listOf(Territory(Position(1,1)))
     }
 
     override fun iconList() : List<Iconizable> {

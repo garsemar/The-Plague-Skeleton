@@ -33,16 +33,17 @@ It is a turn-based game in which the following phases or actions follow one anot
      - 🧹 Has no effect
      - 🗡 Decreases the size of the colony by 1
      - 👆 No effect  
-   - **Reproduction and expansion**
-     - TODO
+   - **Reproduction**
+   - **Expansion**
+     
    
  - **Ants (🐜)**
    - **Combat**
       - 🧹 Eliminates the colony
       - 🗡 Decreases the size of the colony by 1
       - 👆 Decreases the size of the colony by 2
-   - **Reproduction and expansion**
-     - TODO
+   - **Reproduction**
+   - **Expansion**
 
 ---
 

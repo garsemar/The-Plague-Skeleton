@@ -35,7 +35,7 @@ class Ant() : Colony() {
         }
         return false
     }
-    fun expand(position: Position, maxPosition: Position): List<Colonization>{
+    override fun expand(position: Position, maxPosition: Position): List<Colonization>{
 
         val posList = mutableListOf<Position>()
         while (posList.size != 4){
@@ -48,6 +48,12 @@ class Ant() : Colony() {
         return listOf(Colonization(this, posList[0]))
     }
 
-
+    override fun colonizedBy(plague: Colony): Colony {
+        when(plague) {
+            is Ant -> {this.plagueSize = plagueSize+plague.plagueSize}
+            is Dragon -> return plague
+        }
+        return this
+    }
 }
 

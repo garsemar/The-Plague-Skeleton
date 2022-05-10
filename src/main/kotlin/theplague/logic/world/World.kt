@@ -75,16 +75,28 @@ class World(
         territories.flatten().forEach { if(it.position.x != player.position.x && it.position.x != player.position.y) it.reproducePlague(Position(width, height)) }
     }
 
+    private fun place(territory: Territory, colony: Colony?) {
+        if(colony != null)
+        {
+            territory.plague?.colonizedBy(colony)
+        }
+    }
+
     /**
      * This function calls the expand function passing as parameter the class Position and the maxPosition.
      */
     private fun expandPlague() {
 
         territories.flatten().forEach {
+                it ->
             if(it.plague?.needsToExpand() == true)
             {
-                player.livesLeft--;
-                //it.plague.expand(it.position, P)
+                val expandsTo = it.expand(it.position, Position(width, height))
+                val plague = it.plague
+                if(expandsTo.isNotEmpty()) {
+                    player.livesLeft--;
+                    expandsTo.forEach { place(it, plague) }
+                }
             }
         }
     }
@@ -102,7 +114,7 @@ class World(
      */
     override fun gameFinished(): Boolean {
         if(player.livesLeft <= 0) {
-            return true
+            return false
         }
         return false
     }
