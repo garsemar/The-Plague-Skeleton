@@ -114,7 +114,7 @@ class World(
      */
     override fun gameFinished(): Boolean {
         if(player.livesLeft <= 0) {
-            return false
+            return true
         }
         return false
     }
